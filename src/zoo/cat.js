@@ -8,7 +8,7 @@ export class Cat {
     return `${this.name}: Tienes que estar bromeando que te obedeceré, ¿verdad?`;
   }
 }
-
+/////////////////////////////////////////////
 
 function sendNotify(id) {
     console.log(`Usuario ${id} notificado`);
@@ -21,10 +21,22 @@ function loadUser() {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-
 let usuario_list = [];
+/*
+setInterval(() => {
+  usuario_list.push(loadUser());
+  for (var i=usuario_list.length-1; i<usuario_list.length; i++) {    
+    sendNotify(usuario_list[i]);
+  }
+}, 2000);
+*/
+var usuarios = Rx.Observable.create( (nuevoUser) => {
+  setInterval(() => {
+    nuevoUser.next(loadUser());
+    nuevoUser.next(loadUser());
+  }, 2000);
+});
 
-usuario_list.push(loadUser());
-
-sendNotify(usuario_list[0]);
-
+usuarios.subscribe((id) => {
+  sendNotify(id);
+});
